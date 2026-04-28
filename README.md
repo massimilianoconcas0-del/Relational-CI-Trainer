@@ -1,5 +1,14 @@
 # 🟢 Relational CI Trainer (Green AI Template)
 
+![XGBoost](https://img.shields.io/badge/Engine-Relational_XGBoost-blueviolet)
+![Tabular Data](https://img.shields.io/badge/Domain-CSV_%2F_Tabular_Data-orange)
+![Scale Invariant](https://img.shields.io/badge/Property-Scale%20Invariant-brightgreen)
+![Optimizer](https://img.shields.io/badge/Optimizer-Adam_Not_Required-blue)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19757717-blue.svg)](https://doi.org/10.5281/zenodo.19757717)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19827952-blue.svg)](https://doi.org/10.5281/zenodo.19827952)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19841529-blue.svg)](https://doi.org/10.5281/zenodo.19841529)
+![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)
+
 **Train Machine Learning models in < 1 second inside a free GitHub Action Runner. No GPUs. No Data Normalization.**
 
 This is a template repository demonstrating the power of the **Dimensionless Deep Learning Framework**. Standard machine learning models (using absolute MSE/Cross-Entropy) suffer from exploding gradients and require heavy hardware, making CI/CD model testing on standard GitHub runners (2-core CPU, 7GB RAM) nearly impossible without expensive external clusters.
