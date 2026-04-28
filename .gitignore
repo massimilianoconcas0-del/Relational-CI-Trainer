@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# File di report generati dinamicamente (evita conflitti nei commit locali)
+report.md
+
 # Distribution / packaging
 .Python
 build/
