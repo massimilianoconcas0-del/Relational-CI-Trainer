@@ -11,7 +11,7 @@
 
 **Train Machine Learning models in < 1 second inside a free GitHub Action Runner. No GPUs. No Data Normalization.**
 
-This is a template repository demonstrating the power of the **Dimensionless Deep Learning Framework**. Standard machine learning models (using absolute MSE/Cross-Entropy) suffer from exploding gradients and require heavy hardware, making CI/CD model testing on standard GitHub runners (2-core CPU, 7GB RAM) nearly impossible without expensive external clusters.
+This is a template repository demonstrating the power of the **Dimensionless Deep Learning Framework**. Standard machine learning models (using absolute MSE/Cross-Entropy)  suffer from exploding gradients and require heavy hardware, making CI/CD model testing on standard GitHub runners (2-core CPU, 7GB RAM) nearly impossible without expensive external clusters.
 
 By applying **Relational Calculus**, we map complex data into pure dimensionless topologies. The result? A model that trains in `~0.1 seconds` directly inside your Pull Request workflow, using only a standard CPU.
 
