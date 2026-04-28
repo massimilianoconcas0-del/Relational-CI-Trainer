@@ -34,6 +34,6 @@ The loss landscape becomes perfectly spherical, allowing instant convergence.
 
 ## 🔗 Powered By
 This template is a technical demonstration of the **Relational Calculus Framework**. 
-Discover how to apply this math to solve the "Batch Effect" in Deep Learning, optimize Fluid Dynamics, or achieve Zero-Shot Transfer across entire domains :
+Discover how to apply this math to solve the "Batch Effect" in Deep Learning, optimize Fluid Dynamics, or achieve Zero-Shot Transfer across entire domains  :
 
 👉 **[Explore the main repository: Relational_Loss_ML](https://github.com/massimilianoconcas0-del/Relational_Loss_ML)**
