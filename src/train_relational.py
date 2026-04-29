@@ -1,103 +1,80 @@
-import time
+"""
+╔══════════════════════════════════════════════════════════════╗
+║  CUSTOMIZATION GUIDE (3 lines to change for your data)      ║
+║                                                             ║
+║  1. Replace generate_absolute_data() with your CSV loader   ║
+║  2. Set `capacity` to your domain's "North Star" column     ║
+║  3. Update the report.md message with your model name       ║
+║                                                             ║
+║  See README.md for a full walkthrough with examples.        ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
 import pandas as pd
 import numpy as np
 import xgboost as xgb
-from sklearn.datasets import make_regression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+import time
 
-def generate_absolute_data(n_samples=15000, n_features=20):
+
+def generate_absolute_data(n_samples: int = 5000):
     """
-    Generates a dataset where the target is a strict dimensionless fraction
-    of the maximum sensor capacity, simulating pure physical constraints.
+    Demo only: creates synthetic data with high absolute values
+    to simulate a real-world scale problem.
     """
-    print("Generating unscaled absolute data...")
-    X, _ = make_regression(n_samples=n_samples, n_features=n_features, random_state=42)
+    from sklearn.datasets import make_regression
 
-    # Artificially inflate the scale to trigger exploding gradients in traditional models
-    X_abs = np.abs(X * 150000.0) + 10.0
-    capacity = X_abs.max(axis=1)
-
-    # Create a complex, non-linear physical ratio strictly bounded between [0, 1]
-    true_ratio = np.clip(np.sin(X.mean(axis=1)) ** 2, 0, 1)
-
-    # Add slight noise to simulate real-world sensor inaccuracies
-    noisy_ratio = np.clip(true_ratio + np.random.normal(0, 0.05, n_samples), 0, 1)
-
-    # The absolute target is simply the capacity multiplied by the ratio
-    y_abs = capacity * noisy_ratio
-
-    feature_names = [f"sensor_{i}" for i in range(n_features)]
-    return pd.DataFrame(X_abs, columns=feature_names), pd.Series(y_abs, name="target_absolute")
-
-def main():
-    print("🚀 Initializing Relational Calculus Training Pipeline...")
-
-    # 1. Load Data
-    X_abs, y_abs = generate_absolute_data()
-
-    start_time = time.time()
-
-    # ---------------------------------------------------------
-    # 2. THE RELATIONAL CALCULUS SHIFT
-    # ---------------------------------------------------------
-    print("Applying Scale-Invariant Topological Mapping...")
-
-    # Extract the "Global Capacity" (C_obs) for each row
-    # In this context, we use the maximum sensor reading as the structural boundary
-    capacity = X_abs.max(axis=1)
-
-    # Transform absolute extensive features into dimensionless intensive fractions (Z_i)
-    X_relational = X_abs.div(capacity, axis=0)
-
-    # Transform the absolute target into a dimensionless ratio
-    y_relational = y_abs / capacity
-
-    # ---------------------------------------------------------
-    # 3. XGBoost Training (Green AI)
-    # ---------------------------------------------------------
-    X_train, X_test, y_train, y_test = train_test_split(X_relational, y_relational, test_size=0.2, random_state=42)
-
-    print("Training Relational XGBoost...")
-    model = xgb.XGBRegressor(
-        n_estimators=100,
-        max_depth=5,
-        learning_rate=0.1,
-        tree_method="hist", # Highly optimized for CPU runners
-        random_state=42
+    X_base, y_base = make_regression(
+        n_samples=n_samples, n_features=5, noise=0.1, random_state=42
     )
+    X_abs = X_base * 150_000
+    y_abs = y_base * 80_000 + np.sin(X_base[:, 0]) * 30_000
+    return X_abs, y_abs
 
-    model.fit(X_train, y_train)
 
-    # 4. Evaluation
-    predictions = model.predict(X_test)
-    mse = mean_squared_error(y_test, predictions)
+# ═══════════════════════════════════════════════════════════════
+# ── CUSTOMIZE: Replace this block with your data loader ──
+X_abs, y_abs = generate_absolute_data()
+# ─────────────────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════
 
-    end_time = time.time()
-    training_time = round(end_time - start_time, 3)
+# ═══════════════════════════════════════════════════════════════
+# ── CUSTOMIZE: Define the North Star capacity for YOUR domain ──
+capacity = X_abs.max(axis=1)  # NumPy array, no `.values` needed
+# ──────────────────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════
 
-    print(f"✅ Training completed in {training_time} seconds. Relational MSE: {mse:.6f}")
+# Relational transformation (no data scaling needed)
+# Note: capacity is a 1D numpy array, so we reshape to 2D for division
+X_relational = X_abs / capacity.reshape(-1, 1)
+y_relational = y_abs / capacity
 
-    # ---------------------------------------------------------
-    # 5. Export Markdown Report for GitHub Actions
-    # ---------------------------------------------------------
-    report_content = f"""## 🟢 Green AI Build Successful
-**Model compiled and verified on standard GitHub CI/CD infrastructure.**
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X_relational, y_relational, test_size=0.2, random_state=42
+)
 
-* ⏱️ **Pipeline Execution Time:** `{training_time} seconds`
-* 💻 **Hardware:** Standard GitHub Ubuntu Runner (2-core CPU)
-* 📐 **Relational MSE (Test):** `{mse:.6f}`
-* 🗃️ **Dataset:** 15,000 samples, 20 features (Synthetically inflated absolute scale)
+# Train a tiny XGBoost model
+model = xgb.XGBRegressor(
+    n_estimators=20, max_depth=3, learning_rate=0.3, verbosity=0
+)
 
-> **Architectural Note:** This model was trained *without* GPUs, Adam optimizers, or external data normalization (e.g., MinMax/Standard scalers). The data was mapped purely by its structural topology.
->
-> ⚡ *Powered by the [Relational Calculus Framework](https://github.com/massimilianoconcas0-del/Relational_Loss_ML).*
-"""
+start = time.time()
+model.fit(X_train, y_train)
+training_time = time.time() - start
 
-    with open("report.md", "w") as f:
-        f.write(report_content)
+# Evaluate
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
 
-    print("Report exported to report.md")
-
-if __name__ == "__main__":
-    main()
+# Write the CI report
+with open("report.md", "w") as f:
+    f.write(f"## 🤖 Relational‑CI‑Trainer Results\n")
+    f.write(f"- **Relational MSE (test):** {mse:.6f}\n")
+    f.write(f"- **Training time:** {training_time:.2f} s\n")
+    f.write(f"- **Data points:** {len(X_abs)}\n")
+    if mse < 0.01:
+        f.write(f"- **Status:** ✅ Model successfully learned the relational pattern\n")
+    else:
+        f.write(f"- **Status:** ⚠️ MSE higher than expected – check capacity column\n")
